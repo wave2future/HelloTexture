@@ -65,23 +65,41 @@ static TEIVertex _rectangle[4];
 // The Stanford Pattern
 - (void)viewDidLoad {
 	
-	
 	// OpenGL defaults to CCW winding rule for triangles.
 	// The patten is: V0 -> V1 -> V2 then V2 -> V1 -> V3 ... etc.
 	// At draw time I use glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount)
 	// addVertex(x,y,z r,g,b,a, s,t)
 	
+//	// V0
+//	_addVertex(-1.0f, -1.0f, 0.0f, 255, 0, 0, 255, 0.0f, 0.0f);
+//	
+//	// V1
+//	_addVertex( 1.0f, -1.0f, 0.0f, 255, 0, 0, 255, 1.0f, 0.0f);
+//	
+//	// V2
+//	_addVertex(-1.0f,  1.0f, 0.0f, 255, 0, 0, 255, 0.0f, 1.0f);
+//	
+//	// V3
+//	_addVertex( 1.0f,  1.0f, 0.0f, 255, 0, 0, 255, 1.0f, 1.0f);
+
+	GLfloat n =  1.0f;
+	GLfloat s = -1.0f;
+	
+	GLfloat w = -1.0f;
+	GLfloat e =  1.0f;
+	
 	// V0
-	_addVertex(-1.0f, -1.0f, 0.0f, 255, 0, 0, 255, 0.0f, 0.0f);
+	_addVertex(w, s, 0.0f, 255, 0, 0, 255, 0.0f, 0.0f);
 	
 	// V1
-	_addVertex( 1.0f, -1.0f, 0.0f, 255, 0, 0, 255, 1.0f, 0.0f);
+	_addVertex(e, s, 0.0f, 255, 0, 0, 255, 1.0f, 0.0f);
 	
 	// V2
-	_addVertex(-1.0f,  1.0f, 0.0f, 255, 0, 0, 255, 0.0f, 1.0f);
+	_addVertex(w, n, 0.0f, 255, 0, 0, 255, 0.0f, 1.0f);
 	
 	// V3
-	_addVertex( 1.0f,  1.0f, 0.0f, 255, 0, 0, 255, 1.0f, 1.0f);
+	_addVertex(e, n, 0.0f, 255, 0, 0, 255, 1.0f, 1.0f);
+	
 	
 	over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3_translucent" extension:@"png" mipmap:YES ];
 //	over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3" extension:@"png" mipmap:YES ];
