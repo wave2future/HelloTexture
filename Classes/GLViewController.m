@@ -34,19 +34,6 @@ static TEIVertex _rectangle[4];
     [super dealloc];
 }
 
-//- (id)init {
-//	
-//	self = [super init];
-//	
-//	if(nil != self) {
-//		
-//		texture = [[TEITexture alloc] init];
-//		
-//	}
-//	
-//	return self;
-//}
-
 // The Stanford Pattern
 - (void)loadView {
 	
@@ -56,7 +43,7 @@ static TEIVertex _rectangle[4];
 //	glView = [[GLView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];	
 	glView = [[GLView alloc] initWithFrame:applicationFrame];
 	
-	glView.controller = self;
+	glView.drawingDelegate = self;
 		
 	self.view = glView;
 	[glView release];
@@ -158,6 +145,40 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	[super viewWillDisappear:animated];
 }
 
+-(void)setupView:(GLView*)view {
+	
+	
+	glEnable(GL_DEPTH_TEST);
+	
+	
+	const GLfloat zNear			=    0.01; 
+	const GLfloat zFar			= 1000.0; 
+	const GLfloat fieldOfView	=   45.0; 
+	
+	GLfloat size	= zNear * tanf(m3dDegToRad(fieldOfView) / 2.0); 
+	GLfloat w		= view.bounds.size.width;
+	GLfloat h		= view.bounds.size.height;
+	
+	glMatrixMode(GL_PROJECTION);
+	glFrustumf(-size, size, -size / (w / h), size / (w / h), zNear, zFar); 
+	glViewport(0, 0, w, h);
+	
+	glFrontFace(GL_CCW);	
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	glEnable (GL_BLEND);
+	//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	// This is the classic Porter-Duff "over" operation
+	// used with pre-multiplied images.
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+	
+}
+
 - (void)drawView:(GLView*)view {
 	
 	// !! NOTE !! Clearing is expensive. Avoid it if possible!
@@ -171,7 +192,6 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
-	
 	
 	// Select model-view matrix prior to push
 	glMatrixMode(GL_MODELVIEW);
@@ -195,8 +215,8 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	// Push texture matrix and place in sane state
 
 	// Futz with texture attached to background rectangle
-	glScalef(2.0f, 2.0f, 1.0f);
-//	glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
+	glScalef(3.0f/1.0f, 1.0f/1.0f, 1.0f);
+	glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
 	// Futz with texture attached to background rectangle
 
 	glBindTexture(GL_TEXTURE_2D, under_texture.name);
@@ -275,40 +295,6 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 
 	
 	
-	
-}
-
--(void)setupView:(GLView*)view {
-
-
-	glEnable(GL_DEPTH_TEST);
-
-	
-	const GLfloat zNear			=    0.01; 
-	const GLfloat zFar			= 1000.0; 
-	const GLfloat fieldOfView	=   45.0; 
-	
-	GLfloat size	= zNear * tanf(m3dDegToRad(fieldOfView) / 2.0); 
-	GLfloat w		= view.bounds.size.width;
-	GLfloat h		= view.bounds.size.height;
-	
-	glMatrixMode(GL_PROJECTION);
-	glFrustumf(-size, size, -size / (w / h), size / (w / h), zNear, zFar); 
-	glViewport(0, 0, w, h);
-
-	glFrontFace(GL_CCW);	
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glEnable (GL_BLEND);
-//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	// This is the classic Porter-Duff "over" operation
-	// used with pre-multiplied images.
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
 	
 }
 

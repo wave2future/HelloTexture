@@ -11,15 +11,16 @@
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
+#import "GLView.h"
 
-@class GLView;
 @class TEITexture;
 
-@interface GLViewController : UIViewController {
+@interface GLViewController : UIViewController  <GLViewDelegate> {
 	TEITexture *over_texture;
 	TEITexture *under_texture;
 }
-- (void)drawView:(GLView*)view;
+
 - (void)setupView:(GLView*)view;
+- (void)drawView:(GLView*)view;
 
 @end
