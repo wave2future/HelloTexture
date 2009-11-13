@@ -91,8 +91,8 @@ static TEIVertex _rectangle[4];
 	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3_translucent" extension:@"png" mipmap:YES ];
 //	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3" extension:@"png" mipmap:YES ];
 	
-//	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"mandrill" extension:@"png" mipmap:YES ];	
-	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"orientation_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
+//	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"orientation_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
+	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"mandrill_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
 
 }
 
@@ -213,7 +213,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	// Push texture matrix and place in sane state
 
 	// Futz with texture attached to background rectangle
-	glScalef(3.0f/1.0f, 1.0f/1.0f, 1.0f);
+	glScalef(3.0f/1.0f, 3.0f/1.0f, 1.0f);
 	
 //	glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
 	
