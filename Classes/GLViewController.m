@@ -42,13 +42,11 @@ static TEIVertex _rectangle[4];
 	CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
 	
 	GLView *glView = nil;
-//	glView = [[GLView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];	
-	glView = [[GLView alloc] initWithFrame:applicationFrame];
+	glView = [[[GLView alloc] initWithFrame:applicationFrame] autorelease];
 	
 	glView.drawingDelegate = self;
 		
 	self.view = glView;
-	[glView release];
 }
 
 // The Stanford Pattern
@@ -198,6 +196,9 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glLoadIdentity();
 	// Push model-view matrix and place in sane state
 
+	static GLfloat inc = 0.0f;	
+	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
+	
 	// Futz with background rectangle
 	glTranslatef(0.0f, 0.0f, -7.0f);
 	glScalef(5.0f, 5.0f, 1.0f);
@@ -213,7 +214,12 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 
 	// Futz with texture attached to background rectangle
 	glScalef(3.0f/1.0f, 1.0f/1.0f, 1.0f);
-	glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
+	
+//	glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
+	
+	glTranslatef( 1.0f/2.0f,  1.0f/2.0f, 1.0f);
+	glRotatef(4.0 * angle, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-1.0f/2.0f, -1.0f/2.0f, 1.0f);
 	// Futz with texture attached to background rectangle
 
 	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
@@ -244,9 +250,6 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	// Push model-view matrix and place in sane state
 
 	// Futz with foreground rectangle
-	static GLfloat inc = 0.0f;	
-	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
-	
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 	glTranslatef(0.0f, 0.0f, -6.0f);
 	glScalef(3.0f, 3.0f, 1.0f);

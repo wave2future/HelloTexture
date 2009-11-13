@@ -281,8 +281,8 @@ static uint8_t *GetImageData(CGImageRef image, NGTextureFormat format) {
 	
 	if(nil != self) {
 		
-		NSData *texture_data	= [[NSData  alloc] initWithContentsOfFile:name];
-		UIImage *ui_image		= [[UIImage alloc] initWithData:texture_data];
+		NSData *texture_data	= [[[NSData  alloc] initWithContentsOfFile:name] autorelease];
+		UIImage *ui_image		= [[[UIImage alloc] initWithData:texture_data] autorelease];
 		
 		if (ui_image.CGImage != NULL) {
 			
@@ -316,9 +316,6 @@ static uint8_t *GetImageData(CGImageRef image, NGTextureFormat format) {
 			
 			
 		} // if (image != NULL)
-	
-		[ui_image		release];
-		[texture_data	release];
 		
 		
 	} // if(nil != self)
