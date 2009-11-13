@@ -13,6 +13,6 @@
 	UIWindow				*window;
 	GLViewController		*controller;
 }
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet GLViewController *controller;
+@property (nonatomic, retain) IBOutlet         UIWindow	*window;
+@property (nonatomic, retain) IBOutlet GLViewController	*controller;
 @end

@@ -15,8 +15,7 @@ static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
 - (void)dealloc {
 	
 	[_pvrTextureData removeAllObjects];
-	[_pvrTextureData release];
-	
+	[_pvrTextureData release], _pvrTextureData = nil;
 	[super dealloc];
 }
 

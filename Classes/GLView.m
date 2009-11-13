@@ -56,12 +56,9 @@
 	eaglLayer.opaque = YES;
 	
 	eaglLayer.drawableProperties = 
-	[NSDictionary dictionaryWithObjectsAndKeys:
-	 [NSNumber numberWithBool:FALSE], 
-	 kEAGLDrawablePropertyRetainedBacking,
-	 kEAGLColorFormatRGBA8, 
-	 kEAGLDrawablePropertyColorFormat,
-	 nil];
+	[NSDictionary 
+	 dictionaryWithObjectsAndKeys:
+	 [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 	
 	context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
 	
@@ -113,8 +110,8 @@
 	glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
 	glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, depthRenderbuffer);
 	
-	if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
-	{
+	if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) {
+		
 		NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
 		return NO;
 	}

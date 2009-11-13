@@ -26,12 +26,14 @@ static TEIVertex _rectangle[4];
 
 @implementation GLViewController
 
-- (void)dealloc {
+@synthesize over_texture = _over_texture;
+@synthesize under_texture = _under_texture;
+
+- (void) dealloc {
 	
-	[under_texture	release];
-	[over_texture	release];
-	
-    [super dealloc];
+    [_over_texture	release], _over_texture		= nil;
+    [_under_texture	release], _under_texture	= nil;
+    [super			dealloc];
 }
 
 // The Stanford Pattern
@@ -88,11 +90,11 @@ static TEIVertex _rectangle[4];
 	_addVertex(e, n, 0.0f, 255, 0, 0, 255, 1.0f, 1.0f);
 	
 	
-	over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3_translucent" extension:@"png" mipmap:YES ];
-//	over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3" extension:@"png" mipmap:YES ];
+	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3_translucent" extension:@"png" mipmap:YES ];
+//	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3" extension:@"png" mipmap:YES ];
 	
-//	under_texture	= [ [TEITexture alloc] initWithImageFile:@"mandrill" extension:@"png" mipmap:YES ];	
-	under_texture	= [ [TEITexture alloc] initWithImageFile:@"orientation_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
+//	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"mandrill" extension:@"png" mipmap:YES ];	
+	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"orientation_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
 
 }
 
@@ -139,17 +141,12 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 // The Stanford Pattern
 - (void)viewWillDisappear:(BOOL)animated {
 	
-	//	[self rememberState];
-	//	[self saveStateToDisk];
-	
 	[super viewWillDisappear:animated];
 }
 
 -(void)setupView:(GLView*)view {
 	
-	
 	glEnable(GL_DEPTH_TEST);
-	
 	
 	const GLfloat zNear			=    0.01; 
 	const GLfloat zFar			= 1000.0; 
@@ -169,7 +166,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glLoadIdentity();
 	
 	glEnable (GL_BLEND);
-	//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	// This is the classic Porter-Duff "over" operation
 	// used with pre-multiplied images.
@@ -219,7 +216,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
 	// Futz with texture attached to background rectangle
 
-	glBindTexture(GL_TEXTURE_2D, under_texture.name);
+	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
     glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
     glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
     glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
@@ -270,7 +267,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glScalef(2.0f, 2.0f, 1.0f);
 	// Futz with texture attached to foreground rectangle
 	
-	glBindTexture(GL_TEXTURE_2D, over_texture.name);
+	glBindTexture(GL_TEXTURE_2D, self.over_texture.name);
     glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
     glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
     glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);

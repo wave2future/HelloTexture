@@ -16,9 +16,12 @@
 @class TEITexture;
 
 @interface GLViewController : UIViewController  <GLViewDelegate> {
-	TEITexture *over_texture;
-	TEITexture *under_texture;
+	TEITexture *_over_texture;
+	TEITexture *_under_texture;
 }
+
+@property (nonatomic, retain) TEITexture *over_texture;
+@property (nonatomic, retain) TEITexture *under_texture;
 
 - (void)setupView:(GLView*)view;
 - (void)drawView:(GLView*)view;

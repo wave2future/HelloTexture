@@ -7,7 +7,7 @@
 //
 
 // How many times a second to refresh the screen
-#define kRenderingFrequency 60.0
+#define kRenderingFrequency (60.0)
 
 // For setting up perspective, define near, far, and angle of view
 #define kZNear			0.01

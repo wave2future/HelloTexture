@@ -14,9 +14,6 @@
 @synthesize window;
 @synthesize controller;
 
-
-// The following is from Stanford Class Lecture #6 ViewController LifeCycle Pattern
-
 // The Stanford Patterm
 - (void)dealloc {
 	

@@ -16,24 +16,28 @@
 @interface TEITexture : NSObject {
 	
 	GLuint _name;
-	
 	GLuint _width;
 	GLuint _height;
 	
 	NSMutableArray *_pvrTextureData;
 	
-	
 }
-
-- (id)initWithTextureFile:   (NSString *)name									mipmap:(BOOL)mipmap;
-- (id)initWithPVRTextureFile:(NSString *)path									mipmap:(BOOL)mipmap;
-- (id)initWithImageFile:     (NSString *)name extension:(NSString *)extension	mipmap:(BOOL)mipmap;
-
-- (BOOL)ingestPVRTextureFile:(NSData *)data;
-- (void) makeCheckImage;
 
 @property (readonly) GLuint name;
 @property (readonly) GLuint width;
 @property (readonly) GLuint height;
+
+- (id)initWithTextureFile:(NSString *)name									
+				   mipmap:(BOOL)mipmap;
+
+- (id)initWithPVRTextureFile:(NSString *)path									
+					  mipmap:(BOOL)mipmap;
+
+- (id)initWithImageFile:(NSString *)name 
+			  extension:(NSString *)extension	
+				 mipmap:(BOOL)mipmap;
+
+- (BOOL)ingestPVRTextureFile:(NSData *)data;
+- (void) makeCheckImage;
 
 @end

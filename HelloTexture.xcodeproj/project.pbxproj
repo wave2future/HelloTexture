@@ -232,6 +232,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = HelloTexture_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "HelloTexture-Info.plist";
 				PRODUCT_NAME = HelloTexture;
 			};
