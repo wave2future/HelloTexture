@@ -146,13 +146,13 @@
 		312E24050FEAC13900EF4E29 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				316696B010AE11A400DB6071 /* mandrill.png */,
-				316696AB10AE118900DB6071 /* mandrill_flipped_for_pvr_mip_4.pvr */,
-				316696B110AE11A400DB6071 /* orientation.png */,
-				312E24090FEAC16500EF4E29 /* orientation_flipped_for_pvr_mip_4.pvr */,
-				316696B210AE11A400DB6071 /* swirl.png */,
-				316696AC10AE118900DB6071 /* swirl_flipped_for_pvr_mip_4.pvr */,
 				312E24080FEAC16500EF4E29 /* kids_grid_3x3_translucent.png */,
+				316696B010AE11A400DB6071 /* mandrill.png */,
+				316696B210AE11A400DB6071 /* swirl.png */,
+				316696B110AE11A400DB6071 /* orientation.png */,
+				316696AB10AE118900DB6071 /* mandrill_flipped_for_pvr_mip_4.pvr */,
+				316696AC10AE118900DB6071 /* swirl_flipped_for_pvr_mip_4.pvr */,
+				312E24090FEAC16500EF4E29 /* orientation_flipped_for_pvr_mip_4.pvr */,
 			);
 			name = Textures;
 			sourceTree = "<group>";
