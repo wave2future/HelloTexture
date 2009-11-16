@@ -21,6 +21,7 @@
 		312E24360FEAC1B100EF4E29 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312E24330FEAC1B100EF4E29 /* CoreGraphics.framework */; };
 		312E24370FEAC1B100EF4E29 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312E24340FEAC1B100EF4E29 /* OpenGLES.framework */; };
 		312E24380FEAC1B100EF4E29 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312E24350FEAC1B100EF4E29 /* QuartzCore.framework */; };
+		31405A6310B1E7AF00D20C62 /* HelloTextureIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 31405A6210B1E7AF00D20C62 /* HelloTextureIcon.png */; };
 		316696AD10AE118900DB6071 /* mandrill_flipped_for_pvr_mip_4.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 316696AB10AE118900DB6071 /* mandrill_flipped_for_pvr_mip_4.pvr */; };
 		316696AE10AE118900DB6071 /* swirl_flipped_for_pvr_mip_4.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 316696AC10AE118900DB6071 /* swirl_flipped_for_pvr_mip_4.pvr */; };
 		316696B310AE11A400DB6071 /* mandrill.png in Resources */ = {isa = PBXBuildFile; fileRef = 316696B010AE11A400DB6071 /* mandrill.png */; };
@@ -49,6 +50,7 @@
 		312E24330FEAC1B100EF4E29 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		312E24340FEAC1B100EF4E29 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		312E24350FEAC1B100EF4E29 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		31405A6210B1E7AF00D20C62 /* HelloTextureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = HelloTextureIcon.png; sourceTree = "<group>"; };
 		316696AB10AE118900DB6071 /* mandrill_flipped_for_pvr_mip_4.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = mandrill_flipped_for_pvr_mip_4.pvr; sourceTree = "<group>"; };
 		316696AC10AE118900DB6071 /* swirl_flipped_for_pvr_mip_4.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = swirl_flipped_for_pvr_mip_4.pvr; sourceTree = "<group>"; };
 		316696B010AE11A400DB6071 /* mandrill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mandrill.png; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				31405A6210B1E7AF00D20C62 /* HelloTextureIcon.png */,
 				3107E2A90FEAC07500BADD66 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* HelloTexture-Info.plist */,
 			);
@@ -207,6 +210,7 @@
 				316696B310AE11A400DB6071 /* mandrill.png in Resources */,
 				316696B410AE11A400DB6071 /* orientation.png in Resources */,
 				316696B510AE11A400DB6071 /* swirl.png in Resources */,
+				31405A6310B1E7AF00D20C62 /* HelloTextureIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
