@@ -88,7 +88,8 @@ static TEIVertex _rectangle[4];
 	_addVertex(e, n, 0.0f, 255, 0, 0, 255, 1.0f, 1.0f);
 	
 	
-	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3_translucent" extension:@"png" mipmap:YES ];
+	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"candycane_scalar_disk" extension:@"png" mipmap:YES ];
+//	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3_translucent" extension:@"png" mipmap:YES ];
 //	_over_texture	= [ [TEITexture alloc] initWithImageFile:@"kids_grid_3x3" extension:@"png" mipmap:YES ];
 	
 //	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"orientation_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
@@ -250,7 +251,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	// Push model-view matrix and place in sane state
 
 	// Futz with foreground rectangle
-	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	glRotatef(-10.0f * angle, 0.0f, 0.0f, 1.0f);
 	glTranslatef(0.0f, 0.0f, -6.0f);
 	glScalef(3.0f, 3.0f, 1.0f);
 	// Futz with foreground rectangle
@@ -267,7 +268,8 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	
 	
 	// Futz with texture attached to foreground rectangle
-	glScalef(2.0f, 2.0f, 1.0f);
+//	glScalef(2.0f, 2.0f, 1.0f);
+	glScalef(1.0f, 1.0f, 1.0f);
 	// Futz with texture attached to foreground rectangle
 	
 	glBindTexture(GL_TEXTURE_2D, self.over_texture.name);
