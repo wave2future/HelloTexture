@@ -89,10 +89,10 @@
 			isa = PBXGroup;
 			children = (
 				3107E29C0FEAC02C00BADD66 /* ConstantsAndMacros.h */,
-				31D02B431134762D00747AF1 /* JLMMatrixLibrary.cpp */,
-				31D02B441134762D00747AF1 /* JLMMatrixLibrary.h */,
-				31D02B451134762D00747AF1 /* VectorMatrix.cpp */,
 				31D02B461134762D00747AF1 /* VectorMatrix.h */,
+				31D02B451134762D00747AF1 /* VectorMatrix.cpp */,
+				31D02B441134762D00747AF1 /* JLMMatrixLibrary.h */,
+				31D02B431134762D00747AF1 /* JLMMatrixLibrary.cpp */,
 				3107E29D0FEAC02C00BADD66 /* GLView.h */,
 				3107E29E0FEAC02C00BADD66 /* GLView.m */,
 				3107E29F0FEAC02C00BADD66 /* GLViewController.h */,
