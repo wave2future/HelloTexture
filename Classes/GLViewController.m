@@ -149,7 +149,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 												  near:(GLfloat)near 
 												   far:(GLfloat)far {
 	
-	GLfloat ymax = near * tanf(m3dDegToRad(fieldOfViewInDegreesY));
+	GLfloat ymax = near * tanf( m3dDegToRad(fieldOfViewInDegreesY)/2.0 );
 	GLfloat ymin = -ymax;
 	GLfloat xmin = ymin * aspectRatioWidthOverHeight;
 	GLfloat xmax = ymax * aspectRatioWidthOverHeight;
