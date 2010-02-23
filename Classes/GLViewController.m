@@ -72,6 +72,10 @@ static TEIVertex _rectangle[4];
 
 	GLfloat n =  1.0f;
 	GLfloat s = -1.0f;
+//	GLfloat n =  (self.view.bounds.size.height/self.view.bounds.size.width)/2.0;
+//	GLfloat s = -(self.view.bounds.size.height/self.view.bounds.size.width)/2.0;
+	
+	
 	
 	GLfloat w = -1.0f;
 	GLfloat e =  1.0f;
@@ -98,30 +102,6 @@ static TEIVertex _rectangle[4];
 
 }
 
-static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
-					   GLubyte r, GLubyte g, GLubyte b, GLubyte a,
-					   GLfloat s, GLfloat t) {
-		
-	TEIVertex *vertex = &_rectangle[_vertexCount];
-	
-	// xyz
-    vertex->xyz[0] = x; 
-	vertex->xyz[1] = y; 
-	vertex->xyz[2] = z;
-	
-	// rgba
-    vertex->rgba[0] = r; 
-	vertex->rgba[1] = g; 
-	vertex->rgba[2] = b; 
-	vertex->rgba[3] = a;
-	
-	// st
-    vertex->st[0] = s; 
-	vertex->st[1] = t; 
-	
-    _vertexCount++;
-}
-
 // The Stanford Pattern
 - (void)viewWillAppear:(BOOL)animated {
 	
@@ -144,6 +124,101 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	[super viewWillDisappear:animated];
 }
 
+-(void)setupView:(GLView*)view {
+	
+	glEnable(GL_DEPTH_TEST);
+	
+	const GLfloat zNear			=    0.01; 
+	const GLfloat zFar			= 1000.0; 
+	const GLfloat fieldOfView	=   90.0; 
+		
+	glMatrixMode(GL_PROJECTION);
+	[self perspectiveProjectionWithFieldOfViewInDegreesY:fieldOfView aspectRatioWidthOverHeight:view.bounds.size.width/view.bounds.size.height near:zNear far:zFar];
+	glViewport(0, 0, view.bounds.size.width, view.bounds.size.height);  
+	
+	glFrontFace(GL_CCW);	
+	
+//	glMatrixMode(GL_MODELVIEW);
+//	glLoadIdentity();
+	
+	glEnable (GL_BLEND);
+//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	// This is the classic Porter-Duff "over" operation
+	// used with pre-multiplied images.
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glClearColor(0.25, 0.25, 0.25, 1.0f);
+	
+	// Aim the camera
+	M3DVector3f eye, target, up;
+	m3dLoadVector3f(eye,	0.0, 0.0, 1/0.95);
+	m3dLoadVector3f(target, 0.0, 0.0, 0.0);
+	m3dLoadVector3f(up,		0.0, 1.0, 0.0);
+	
+	M3DMatrix44f rote;
+	TIESetRotationY(rote, m3dDegToRad(0.0));
+	
+	TIEMatrix4x4MulPoint3(rote, eye);
+	
+	[self placeCameraAtLocation:eye	target:target up:up];
+	
+}
+
+- (void)drawView:(GLView*)view {
+		
+	// angle wangle.
+	static GLfloat inc = 0.0f;	
+	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
+	
+	// !! NOTE !! Clearing is expensive. Avoid it if possible!
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	glEnable(GL_TEXTURE_2D);
+	
+//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);	
+//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);	
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// Select texture matrix
+	glMatrixMode(GL_TEXTURE);
+	
+	// Push texture matrix and place in sane state
+	glPushMatrix();
+	// Push texture matrix and place in sane state
+
+	// Futz with texture attached to background rectangle
+	glScalef(4.0f/1.0f, 4.0f/1.0f, 1.0f);
+	
+	glTranslatef( 1.0f/2.0f,  1.0f/2.0f, 1.0f);
+	glRotatef((1.0/1.0)* angle, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-1.0f/2.0f, -1.0f/2.0f, 1.0f);
+	// Futz with texture attached to background rectangle
+
+	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
+	glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
+	glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
+	glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount);
+		
+	// Pop texture matrix
+	glPopMatrix();
+	// Pop texture matrix
+	
+	// Futz with foreground rectangle	
+	inc += 5.0/10.0;
+	// Futz with foreground rectangle
+	
+}
+
+- (void)didReceiveMemoryWarning {
+	
+    [super didReceiveMemoryWarning]; 
+}
+
 - (void)perspectiveProjectionWithFieldOfViewInDegreesY:(GLfloat)fieldOfViewInDegreesY 
 							aspectRatioWidthOverHeight:(GLfloat)aspectRatioWidthOverHeight 
 												  near:(GLfloat)near 
@@ -151,35 +226,15 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	
 	GLfloat ymax = near * tanf( m3dDegToRad(fieldOfViewInDegreesY)/2.0 );
 	GLfloat ymin = -ymax;
+	
 	GLfloat xmin = ymin * aspectRatioWidthOverHeight;
 	GLfloat xmax = ymax * aspectRatioWidthOverHeight;
 	
+	//	glFrustumf (left, right, bottom, top, near, far)
 	glFrustumf(xmin, xmax, ymin, ymax, near, far);
 	
 }
 
-//
-//	Aiming the OpenGL camera involves a matrix inversion. 
-//
-//	On p. 25 of Robot Manipulators: Mathematics, Programming, and Control by Richard Paul (old reliable) there is a
-// simple and computationally cheap way to do the inversion. On Google Books here: http://bit.ly/39QfMr
-//
-//	We must represent the camera frame in eye space, the space within which OpenGL rendering is done.
-//
-//	Given C - the camera transformation in world space we need C' it's inverse. We needn't do a full 
-// blown matrix inverse because of the special case of this frame. It has an orthonormal upper 3x3. 
-// So C' can be calculated thusly:
-//
-//	C =
-//	nx ox ax px
-//	ny oy ay py
-//	nz oz az pz
-//
-//	C' =
-//	nx ny nz -p.n
-//	ox oy oz -p.o
-//	ax ay az -p.a
-//
 - (void)placeCameraAtLocation:(M3DVector3f)location 
 					   target:(M3DVector3f)target 
 						   up:(M3DVector3f)up {
@@ -291,161 +346,28 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	
 }
 
--(void)setupView:(GLView*)view {
+static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
+					   GLubyte r, GLubyte g, GLubyte b, GLubyte a,
+					   GLfloat s, GLfloat t) {
 	
-	glEnable(GL_DEPTH_TEST);
+	TEIVertex *vertex = &_rectangle[_vertexCount];
 	
-	const GLfloat zNear			=    0.01; 
-	const GLfloat zFar			= 1000.0; 
-	const GLfloat fieldOfView	=   45.0; 
-		
-	glMatrixMode(GL_PROJECTION);
-	[self perspectiveProjectionWithFieldOfViewInDegreesY:fieldOfView aspectRatioWidthOverHeight:view.bounds.size.width/view.bounds.size.height near:zNear far:zFar];
-	glViewport(0, 0, view.bounds.size.width, view.bounds.size.height);  
+	// xyz
+    vertex->xyz[0] = x; 
+	vertex->xyz[1] = y; 
+	vertex->xyz[2] = z;
 	
-	glFrontFace(GL_CCW);	
+	// rgba
+    vertex->rgba[0] = r; 
+	vertex->rgba[1] = g; 
+	vertex->rgba[2] = b; 
+	vertex->rgba[3] = a;
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	// st
+    vertex->st[0] = s; 
+	vertex->st[1] = t; 
 	
-	glEnable (GL_BLEND);
-//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	// This is the classic Porter-Duff "over" operation
-	// used with pre-multiplied images.
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-	
-}
-
-- (void)drawView:(GLView*)view {
-	
-	// angle wangle.
-	static GLfloat inc = 0.0f;	
-	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
-	
-	// !! NOTE !! Clearing is expensive. Avoid it if possible!
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	glEnable(GL_TEXTURE_2D);
-	
-//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);	
-//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);	
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	
-	// Select model-view matrix prior to push
-	glMatrixMode(GL_MODELVIEW);
-	
-	// Push model-view matrix and place in sane state
-	glPushMatrix();
-	glLoadIdentity();
-	// Push model-view matrix and place in sane state
-	
-	// Futz with background rectangle
-	glTranslatef(0.0f, 0.0f, -7.0f);
-	glScalef(5.0f, 5.0f, 1.0f);
-	// Futz with background rectangle
-
-	// Select texture matrix prior to push
-	glMatrixMode(GL_TEXTURE);
-	
-	// Push texture matrix and place in sane state
-	glPushMatrix();
-	glLoadIdentity();
-	// Push texture matrix and place in sane state
-
-	// Futz with texture attached to background rectangle
-	glScalef(4.0f/1.0f, 4.0f/1.0f, 1.0f);
-	
-	glTranslatef( 1.0f/2.0f,  1.0f/2.0f, 1.0f);
-	glRotatef((1.0/1.0)* angle, 0.0f, 0.0f, 1.0f);
-	glTranslatef(-1.0f/2.0f, -1.0f/2.0f, 1.0f);
-	// Futz with texture attached to background rectangle
-
-	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
-	glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
-	glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
-	glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount);
-		
-	// Pop texture matrix
-	glPopMatrix();
-	// Pop texture matrix
-	
-	// Select model-view matrix following pop
-	glMatrixMode(GL_MODELVIEW);
-	
-	// Pop model-view matrix
-	glPopMatrix();
-	// Pop model-view matrix
-
-	
-	
-	// Select model-view matrix prior to push
-	glMatrixMode(GL_MODELVIEW);
-	
-	// Push model-view matrix and place in sane state
-	glPushMatrix();
-	glLoadIdentity();
-	// Push model-view matrix and place in sane state
-
-	// Futz with foreground rectangle
-	glRotatef(10.0f * angle, 0.0f, 0.0f, 1.0f);
-	glTranslatef(0.0f, 0.0f, -6.0f);
-	glScalef(3.0f, 3.0f, 1.0f);
-	// Futz with foreground rectangle
-	
-
-	
-	// Select texture matrix prior to push
-	glMatrixMode(GL_TEXTURE);
-	
-	// Push texture matrix and place in sane state
-	glPushMatrix();
-	glLoadIdentity();
-	// Push texture matrix and place in sane state
-	
-	
-	// Futz with texture attached to foreground rectangle
-//	glScalef(2.0f, 2.0f, 1.0f);
-	glScalef(1.0f, 1.0f, 1.0f);
-	// Futz with texture attached to foreground rectangle
-	
-	glBindTexture(GL_TEXTURE_2D, self.over_texture.name);
-    glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
-    glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
-    glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount);
-
-	// Pop texture matrix
-	glPopMatrix();
-	// Pop texture matrix
-	
-	// Select model-view matrix following pop
-	glMatrixMode(GL_MODELVIEW);
-
-	
-	
-	// Futz with foreground rectangle	
-	inc += 5.0/10.0;
-	// Futz with foreground rectangle
-		
-	// Pop model-view matrix
-	glPopMatrix();
-	// Pop model-view matrix
-
-	
-	
-	
-}
-
-- (void)didReceiveMemoryWarning {
-	
-    [super didReceiveMemoryWarning]; 
+    _vertexCount++;
 }
 
 @end
