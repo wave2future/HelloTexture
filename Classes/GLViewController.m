@@ -10,6 +10,7 @@
 #import "GLView.h"
 #import "TEITexture.h"
 #import "ConstantsAndMacros.h"
+#import "JLMMatrixLibrary.h"
 
 static GLuint _vertexCount = 0;
 static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
@@ -143,6 +144,153 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	[super viewWillDisappear:animated];
 }
 
+- (void)perspectiveProjectionWithFieldOfViewInDegreesY:(GLfloat)fieldOfViewInDegreesY 
+							aspectRatioWidthOverHeight:(GLfloat)aspectRatioWidthOverHeight 
+												  near:(GLfloat)near 
+												   far:(GLfloat)far {
+	
+	GLfloat ymax = near * tanf(m3dDegToRad(fieldOfViewInDegreesY));
+	GLfloat ymin = -ymax;
+	GLfloat xmin = ymin * aspectRatioWidthOverHeight;
+	GLfloat xmax = ymax * aspectRatioWidthOverHeight;
+	
+	glFrustumf(xmin, xmax, ymin, ymax, near, far);
+	
+}
+
+//
+//	Aiming the OpenGL camera involves a matrix inversion. 
+//
+//	On p. 25 of Robot Manipulators: Mathematics, Programming, and Control by Richard Paul (old reliable) there is a
+// simple and computationally cheap way to do the inversion. On Google Books here: http://bit.ly/39QfMr
+//
+//	We must represent the camera frame in eye space, the space within which OpenGL rendering is done.
+//
+//	Given C - the camera transformation in world space we need C' it's inverse. We needn't do a full 
+// blown matrix inverse because of the special case of this frame. It has an orthonormal upper 3x3. 
+// So C' can be calculated thusly:
+//
+//	C =
+//	nx ox ax px
+//	ny oy ay py
+//	nz oz az pz
+//
+//	C' =
+//	nx ny nz -p.n
+//	ox oy oz -p.o
+//	ax ay az -p.a
+//
+- (void)placeCameraAtLocation:(M3DVector3f)location 
+					   target:(M3DVector3f)target 
+						   up:(M3DVector3f)up {
+	
+	// We use the Richard Paul matrix notation of n, o, a, and p 
+	// for x, y, z axes of orientation and p as translation
+	
+	M3DVector3f n; // x-axis
+	M3DVector3f o; // y-axis
+	M3DVector3f a; // z-axis
+	M3DVector3f p; // translation vector
+	
+	// The camera is always pointed along the -z axis. So the "a" vector = -(target - eye)
+	m3dLoadVector3f(a, -(target[0] - location[0]), -(target[1] - location[1]), -(target[2] - location[2]));
+	m3dNormalizeVectorf(a);
+	
+	// The up parameter is assumed approximate. It corresponds to the y-axis or "o" vector.
+	M3DVector3f o_approximate;
+	m3dCopyVector3f(o_approximate, up);
+	m3dNormalizeVectorf(o_approximate);
+	
+	//	n = o_approximate X a
+	m3dCrossProductf(n, o_approximate, a);
+	m3dNormalizeVectorf(n);
+	
+	// Calculate the exact up vector from the cross product
+	// of the other basis vectors which are indeed orthogonal:
+	//
+	// o = a X n
+	//
+	m3dCrossProductf(o, a, n);
+	
+	// The translation vector - location - is the eye location.
+	// It is the where the camera is positioned in world space.
+	// Copy it into the "p" vector
+	m3dCopyVector3f(p, location);
+	
+	// Build camera transform matrix from column vectors: n, o, a, p
+	m3dLoadIdentity44f(_cameraTransform);
+	MatrixElement(_cameraTransform, 0, 0) = n[0];
+	MatrixElement(_cameraTransform, 1, 0) = n[1];
+	MatrixElement(_cameraTransform, 2, 0) = n[2];
+	
+	MatrixElement(_cameraTransform, 0, 1) = o[0];
+	MatrixElement(_cameraTransform, 1, 1) = o[1];
+	MatrixElement(_cameraTransform, 2, 1) = o[2];
+	
+	MatrixElement(_cameraTransform, 0, 2) = a[0];
+	MatrixElement(_cameraTransform, 1, 2) = a[1];
+	MatrixElement(_cameraTransform, 2, 2) = a[2];
+	
+	MatrixElement(_cameraTransform, 0, 3) = p[0];
+	MatrixElement(_cameraTransform, 1, 3) = p[1];
+	MatrixElement(_cameraTransform, 2, 3) = p[2];
+	
+	// echo the camera transformation frame
+	//	nx ox ax px
+	//	ny oy ay py
+	//	nz oz az pz
+	//	NSLog(@"Camera Transformation");
+	//	NSLog(@"nx ox ax px %.2f %.2f %.2f %.2f",
+	//		  MatrixElement(_cameraTransform, 0, 0),
+	//		  MatrixElement(_cameraTransform, 0, 1),
+	//		  MatrixElement(_cameraTransform, 0, 2),
+	//		  MatrixElement(_cameraTransform, 0, 3));
+	//	
+	//	NSLog(@"ny oy ay py %.2f %.2f %.2f %.2f",
+	//		  MatrixElement(_cameraTransform, 1, 0),
+	//		  MatrixElement(_cameraTransform, 1, 1),
+	//		  MatrixElement(_cameraTransform, 1, 2),
+	//		  MatrixElement(_cameraTransform, 1, 3));
+	//	
+	//	NSLog(@"nz oz az pz %.2f %.2f %.2f %.2f",
+	//		  MatrixElement(_cameraTransform, 2, 0),
+	//		  MatrixElement(_cameraTransform, 2, 1),
+	//		  MatrixElement(_cameraTransform, 2, 2),
+	//		  MatrixElement(_cameraTransform, 2, 3));
+	//
+	//	NSLog(@".");
+	
+	
+	// Build upper 3x3 of OpenGL style "view" transformation from transpose of camera orientation
+	// This is the inversion process. Since these 3x3 matrices are orthonormal a transpose is 
+	// sufficient to invert
+	m3dLoadIdentity44f(_openGLCameraInverseTransform);	
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			MatrixElement(_openGLCameraInverseTransform, i, j) = MatrixElement(_cameraTransform, j, i);
+		}
+	}
+	
+	// Complete building OpenGL camera transform by inserting the translation vector
+	// as described in Richard Paul.
+	MatrixElement(_openGLCameraInverseTransform, 0, 3) = -m3dDotProductf(p, n);
+	MatrixElement(_openGLCameraInverseTransform, 1, 3) = -m3dDotProductf(p, o);
+	MatrixElement(_openGLCameraInverseTransform, 2, 3) = -m3dDotProductf(p, a);
+	
+	// Use this to inspect current transform in the debugger
+	//	GLfloat crapola[16];
+	
+	// Set the camera transformation in OpenGL
+	glMatrixMode(GL_MODELVIEW);
+	
+	glLoadIdentity(); 
+	//	glGetFloatv(GL_MODELVIEW_MATRIX, crapola);
+	
+	glLoadMatrixf(_openGLCameraInverseTransform);
+	//	glGetFloatv(GL_MODELVIEW_MATRIX, crapola);
+	
+}
+
 -(void)setupView:(GLView*)view {
 	
 	glEnable(GL_DEPTH_TEST);
@@ -150,14 +298,10 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	const GLfloat zNear			=    0.01; 
 	const GLfloat zFar			= 1000.0; 
 	const GLfloat fieldOfView	=   45.0; 
-	
-	GLfloat size	= zNear * tanf(m3dDegToRad(fieldOfView) / 2.0); 
-	GLfloat w		= view.bounds.size.width;
-	GLfloat h		= view.bounds.size.height;
-	
+		
 	glMatrixMode(GL_PROJECTION);
-	glFrustumf(-size, size, -size / (w / h), size / (w / h), zNear, zFar); 
-	glViewport(0, 0, w, h);
+	[self perspectiveProjectionWithFieldOfViewInDegreesY:fieldOfView aspectRatioWidthOverHeight:view.bounds.size.width/view.bounds.size.height near:zNear far:zFar];
+	glViewport(0, 0, view.bounds.size.width, view.bounds.size.height);  
 	
 	glFrontFace(GL_CCW);	
 	
@@ -177,6 +321,10 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 
 - (void)drawView:(GLView*)view {
 	
+	// angle wangle.
+	static GLfloat inc = 0.0f;	
+	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
+	
 	// !! NOTE !! Clearing is expensive. Avoid it if possible!
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -188,10 +336,6 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
-
-	// angle wangle.
-	static GLfloat inc = 0.0f;	
-	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
 	
 	// Select model-view matrix prior to push
 	glMatrixMode(GL_MODELVIEW);

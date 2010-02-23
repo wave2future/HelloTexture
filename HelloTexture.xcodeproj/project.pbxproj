@@ -28,6 +28,8 @@
 		316696B310AE11A400DB6071 /* mandrill.png in Resources */ = {isa = PBXBuildFile; fileRef = 316696B010AE11A400DB6071 /* mandrill.png */; };
 		316696B410AE11A400DB6071 /* orientation.png in Resources */ = {isa = PBXBuildFile; fileRef = 316696B110AE11A400DB6071 /* orientation.png */; };
 		316696B510AE11A400DB6071 /* swirl.png in Resources */ = {isa = PBXBuildFile; fileRef = 316696B210AE11A400DB6071 /* swirl.png */; };
+		31D02B471134762D00747AF1 /* JLMMatrixLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31D02B431134762D00747AF1 /* JLMMatrixLibrary.cpp */; };
+		31D02B481134762D00747AF1 /* VectorMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31D02B451134762D00747AF1 /* VectorMatrix.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +60,10 @@
 		316696B010AE11A400DB6071 /* mandrill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mandrill.png; sourceTree = "<group>"; };
 		316696B110AE11A400DB6071 /* orientation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orientation.png; sourceTree = "<group>"; };
 		316696B210AE11A400DB6071 /* swirl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = swirl.png; sourceTree = "<group>"; };
+		31D02B431134762D00747AF1 /* JLMMatrixLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JLMMatrixLibrary.cpp; sourceTree = "<group>"; };
+		31D02B441134762D00747AF1 /* JLMMatrixLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLMMatrixLibrary.h; sourceTree = "<group>"; };
+		31D02B451134762D00747AF1 /* VectorMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VectorMatrix.cpp; sourceTree = "<group>"; };
+		31D02B461134762D00747AF1 /* VectorMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VectorMatrix.h; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* HelloTexture_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelloTexture_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* HelloTexture-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HelloTexture-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,6 +88,11 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				3107E29C0FEAC02C00BADD66 /* ConstantsAndMacros.h */,
+				31D02B431134762D00747AF1 /* JLMMatrixLibrary.cpp */,
+				31D02B441134762D00747AF1 /* JLMMatrixLibrary.h */,
+				31D02B451134762D00747AF1 /* VectorMatrix.cpp */,
+				31D02B461134762D00747AF1 /* VectorMatrix.h */,
 				3107E29D0FEAC02C00BADD66 /* GLView.h */,
 				3107E29E0FEAC02C00BADD66 /* GLView.m */,
 				3107E29F0FEAC02C00BADD66 /* GLViewController.h */,
@@ -90,7 +101,6 @@
 				3107E2A20FEAC02C00BADD66 /* HelloTextureAppDelegate.m */,
 				3107E2A60FEAC05100BADD66 /* TEITexture.h */,
 				3107E2A70FEAC05100BADD66 /* TEITexture.m */,
-				3107E29C0FEAC02C00BADD66 /* ConstantsAndMacros.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -230,6 +240,8 @@
 				3107E2A40FEAC02C00BADD66 /* GLViewController.m in Sources */,
 				3107E2A50FEAC02C00BADD66 /* HelloTextureAppDelegate.m in Sources */,
 				3107E2A80FEAC05100BADD66 /* TEITexture.m in Sources */,
+				31D02B471134762D00747AF1 /* JLMMatrixLibrary.cpp in Sources */,
+				31D02B481134762D00747AF1 /* VectorMatrix.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
