@@ -56,26 +56,11 @@ static TEIVertex _rectangle[4];
 	// OpenGL defaults to CCW winding rule for triangles.
 	// The patten is: V0 -> V1 -> V2 then V2 -> V1 -> V3 ... etc.
 	// At draw time I use glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount)
+	//
 	// addVertex(x,y,z r,g,b,a, s,t)
 	
-//	// V0
-//	_addVertex(-1.0f, -1.0f, 0.0f, 255, 0, 0, 255, 0.0f, 0.0f);
-//	
-//	// V1
-//	_addVertex( 1.0f, -1.0f, 0.0f, 255, 0, 0, 255, 1.0f, 0.0f);
-//	
-//	// V2
-//	_addVertex(-1.0f,  1.0f, 0.0f, 255, 0, 0, 255, 0.0f, 1.0f);
-//	
-//	// V3
-//	_addVertex( 1.0f,  1.0f, 0.0f, 255, 0, 0, 255, 1.0f, 1.0f);
-
 	GLfloat n =  1.0f;
 	GLfloat s = -1.0f;
-//	GLfloat n =  (self.view.bounds.size.height/self.view.bounds.size.width)/2.0;
-//	GLfloat s = -(self.view.bounds.size.height/self.view.bounds.size.width)/2.0;
-	
-	
 	
 	GLfloat w = -1.0f;
 	GLfloat e =  1.0f;
@@ -152,7 +137,7 @@ static TEIVertex _rectangle[4];
 	
 	// Aim the camera
 	M3DVector3f eye, target, up;
-	m3dLoadVector3f(eye,	0.0, 0.0, 1/0.95);
+	m3dLoadVector3f(eye,	0.0, 0.0, 4.0);
 	m3dLoadVector3f(target, 0.0, 0.0, 0.0);
 	m3dLoadVector3f(up,		0.0, 1.0, 0.0);
 	
@@ -183,20 +168,27 @@ static TEIVertex _rectangle[4];
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
-	// Select texture matrix
-	glMatrixMode(GL_TEXTURE);
 	
-	// Push texture matrix and place in sane state
+	// Select model-view matrix and push
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	// Push texture matrix and place in sane state
-
-	// Futz with texture attached to background rectangle
-	glScalef(4.0f/1.0f, 4.0f/1.0f, 1.0f);
 	
-	glTranslatef( 1.0f/2.0f,  1.0f/2.0f, 1.0f);
-	glRotatef((1.0/1.0)* angle, 0.0f, 0.0f, 1.0f);
-	glTranslatef(-1.0f/2.0f, -1.0f/2.0f, 1.0f);
-	// Futz with texture attached to background rectangle
+	// Inflate rectangle
+	glScalef(4.0f * (0.98f), 4.0f * (0.98f), 1.0f);
+	
+	// Select texture matrix and push
+	glMatrixMode(GL_TEXTURE);
+	glPushMatrix();
+	
+	GLfloat offset = 1.0f/2.0f;
+	GLfloat scaleFactor = 2.0f;
+	
+	glTranslatef(offset,  offset, 1.0f);
+	
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	glScalef(scaleFactor, scaleFactor, 1.0f);
+	
+	glTranslatef(-offset, -offset, 1.0f);
 
 	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
 	glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
@@ -206,10 +198,44 @@ static TEIVertex _rectangle[4];
 		
 	// Pop texture matrix
 	glPopMatrix();
-	// Pop texture matrix
+
+	// Select model-view matrix and pop
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	
+	
+	
+	
+	// Select model-view matrix prior to push
+	glMatrixMode(GL_MODELVIEW);
+	
+	// Push model-view matrix
+	glPushMatrix();
+	// Push model-view matrix
+	
+	// Futz with foreground rectangle
+	glRotatef(10.0f * angle, 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, 0.0f, 0.5f);
+	glScalef(2.0f, 2.0f, 1.0f);
+	// Futz with foreground rectangle
+	
+	
+	glBindTexture(GL_TEXTURE_2D, self.over_texture.name);
+    glVertexPointer( 3, GL_FLOAT, sizeof(TEIVertex), &_rectangle[0].xyz );
+    glTexCoordPointer(2, GL_FLOAT, sizeof(TEIVertex), &_rectangle[0].st );
+    glColorPointer( 4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount);
+	
+	// Pop model-view matrix
+	glPopMatrix();
+	// Pop model-view matrix	
+	
+	
 	
 	// Futz with foreground rectangle	
 	inc += 5.0/10.0;
+//	inc += 5.0/100.0;
 	// Futz with foreground rectangle
 	
 }
