@@ -112,7 +112,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
     vertex->rgba[0] = r; 
 	vertex->rgba[1] = g; 
 	vertex->rgba[2] = b; 
-	vertex->rgba[2] = a;
+	vertex->rgba[3] = a;
 	
 	// st
     vertex->st[0] = s; 
@@ -188,6 +188,10 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+
+	// angle wangle.
+	static GLfloat inc = 0.0f;	
+	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
 	
 	// Select model-view matrix prior to push
 	glMatrixMode(GL_MODELVIEW);
@@ -196,9 +200,6 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	glPushMatrix();
 	glLoadIdentity();
 	// Push model-view matrix and place in sane state
-
-	static GLfloat inc = 0.0f;	
-	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
 	
 	// Futz with background rectangle
 	glTranslatef(0.0f, 0.0f, -7.0f);
@@ -214,20 +215,18 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	// Push texture matrix and place in sane state
 
 	// Futz with texture attached to background rectangle
-	glScalef(3.0f/1.0f, 3.0f/1.0f, 1.0f);
-	
-//	glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
+	glScalef(4.0f/1.0f, 4.0f/1.0f, 1.0f);
 	
 	glTranslatef( 1.0f/2.0f,  1.0f/2.0f, 1.0f);
-	glRotatef(4.0 * angle, 0.0f, 0.0f, 1.0f);
+	glRotatef((1.0/1.0)* angle, 0.0f, 0.0f, 1.0f);
 	glTranslatef(-1.0f/2.0f, -1.0f/2.0f, 1.0f);
 	// Futz with texture attached to background rectangle
 
 	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
-    glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
-    glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
-    glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount);
+	glVertexPointer(  3, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].xyz );
+	glTexCoordPointer(2, GL_FLOAT,         sizeof(TEIVertex), &_rectangle[0].st  );
+	glColorPointer(   4, GL_UNSIGNED_BYTE, sizeof(TEIVertex), &_rectangle[0].rgba);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexCount);
 		
 	// Pop texture matrix
 	glPopMatrix();
@@ -251,7 +250,7 @@ static void _addVertex(GLfloat x, GLfloat y, GLfloat z,
 	// Push model-view matrix and place in sane state
 
 	// Futz with foreground rectangle
-	glRotatef(-10.0f * angle, 0.0f, 0.0f, 1.0f);
+	glRotatef(10.0f * angle, 0.0f, 0.0f, 1.0f);
 	glTranslatef(0.0f, 0.0f, -6.0f);
 	glScalef(3.0f, 3.0f, 1.0f);
 	// Futz with foreground rectangle
