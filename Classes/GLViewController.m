@@ -122,30 +122,32 @@ static TEIVertex _rectangle[4];
 	glViewport(0, 0, view.bounds.size.width, view.bounds.size.height);  
 	
 	glFrontFace(GL_CCW);	
-	
-//	glMatrixMode(GL_MODELVIEW);
-//	glLoadIdentity();
-	
+		
 	glEnable (GL_BLEND);
-//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	// This is the classic Porter-Duff "over" operation
-	// used with pre-multiplied images.
+	// This is classic Porter-Duff "over" operation used with pre-multiplied alpha.
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	
 	glClearColor(0.25, 0.25, 0.25, 1.0f);
 	
 	// Aim the camera
-	M3DVector3f eye, target, up;
-	m3dLoadVector3f(eye,	0.0, 0.0, 4.0);
-	m3dLoadVector3f(target, 0.0, 0.0, 0.0);
-	m3dLoadVector3f(up,		0.0, 1.0, 0.0);
+	M3DVector3f eye;
+	m3dLoadVector3f(eye,	0.0f, 0.0f, 0.0f);
+	
+	M3DVector3f target;
+	m3dLoadVector3f(target, 0.0f, 0.0f, -4.0f);
+	
+	M3DVector3f up;
+	m3dLoadVector3f(up,		0.0f, 1.0f, 0.0f);
 	
 	M3DMatrix44f rote;
-	TIESetRotationY(rote, m3dDegToRad(0.0));
+//	TIESetRotationX(rote, m3dDegToRad(30.0f));
+	TIESetRotationX(rote, m3dDegToRad(0.0f));
 	
+	// Mangle the camera a bit
 	TIEMatrix4x4MulPoint3(rote, eye);
 	
+	// Place the camera in the scene
 	[self placeCameraAtLocation:eye	target:target up:up];
 	
 }
@@ -154,7 +156,8 @@ static TEIVertex _rectangle[4];
 		
 	// angle wangle.
 	static GLfloat inc = 0.0f;	
-	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
+//	GLfloat angle = m3dRadToDeg(M_PI) * (1.0f - ((1.0f + cosf(m3dDegToRad(inc))) / 2.0f));
+	GLfloat angle = m3dRadToDeg(M_PI) * sinf(m3dDegToRad(inc));
 	
 	// !! NOTE !! Clearing is expensive. Avoid it if possible!
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -168,26 +171,39 @@ static TEIVertex _rectangle[4];
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
-	
+	GLfloat inflationFactor;
+
 	// Select model-view matrix and push
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	
+	inflationFactor = 4.0f;
+
+	// Translate 
+	glTranslatef(0.0f,  0.0f, -inflationFactor);
+
 	// Inflate rectangle
-	glScalef(4.0f * (0.98f), 4.0f * (0.98f), 1.0f);
+	glScalef(inflationFactor * (0.98f), inflationFactor * (0.98f), 1.0f);
 	
 	// Select texture matrix and push
 	glMatrixMode(GL_TEXTURE);
 	glPushMatrix();
 	
-	GLfloat offset = 1.0f/2.0f;
-	GLfloat scaleFactor = 2.0f;
 	
+	// Futz with background rectangle
+	// NOTE:
+	// Because st space is 0 -> 1 we need to offset, do our scale/translations, then un-offset
+	//
+	
+	// offset
+	GLfloat offset = 1.0f/2.0f;
 	glTranslatef(offset,  offset, 1.0f);
 	
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
-	glScalef(scaleFactor, scaleFactor, 1.0f);
+	GLfloat textureRepeats = 3.0f;
+	glScalef(textureRepeats, textureRepeats, 1.0f);
 	
+	// un-offset
 	glTranslatef(-offset, -offset, 1.0f);
 
 	glBindTexture(GL_TEXTURE_2D, self.under_texture.name);
@@ -215,9 +231,13 @@ static TEIVertex _rectangle[4];
 	// Push model-view matrix
 	
 	// Futz with foreground rectangle
-	glRotatef(10.0f * angle, 0.0f, 0.0f, 1.0f);
-	glTranslatef(0.0f, 0.0f, 0.5f);
-	glScalef(2.0f, 2.0f, 1.0f);
+	glRotatef(-angle * 4.0f, 0.0f, 0.0f, 1.0f);
+
+	inflationFactor = 4.0f * (0.85f);
+	glTranslatef(0.0f, 0.0f, -inflationFactor);
+
+	inflationFactor = 2.0f;
+	glScalef(inflationFactor, inflationFactor, 1.0f);
 	// Futz with foreground rectangle
 	
 	
@@ -233,10 +253,7 @@ static TEIVertex _rectangle[4];
 	
 	
 	
-	// Futz with foreground rectangle	
 	inc += 5.0/10.0;
-//	inc += 5.0/100.0;
-	// Futz with foreground rectangle
 	
 }
 
