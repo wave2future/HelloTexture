@@ -116,7 +116,7 @@
 		return NO;
 	}
 	
-	[drawingDelegate setupView:self];
+//	[drawingDelegate setupView:self];
 	
 	return YES;
 }

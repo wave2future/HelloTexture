@@ -14,7 +14,7 @@
 
 @protocol GLViewDelegate
 - (void)drawView:(UIView *)theView;
-- (void)setupView:(UIView *)theView;
+//- (void)setupView:(UIView *)theView;
 @end
 
 @interface GLView : UIView {

@@ -85,6 +85,8 @@ static TEIVertex _rectangle[4];
 //	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"orientation_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
 	_under_texture	= [ [TEITexture alloc] initWithImageFile:@"mandrill_flipped_for_pvr_mip_4" extension:@"pvr" mipmap:YES ];
 
+	GLView *glView = (GLView *)self.view;
+	[self setupView:glView];
 }
 
 // The Stanford Pattern
@@ -92,15 +94,11 @@ static TEIVertex _rectangle[4];
 	
 	[super viewWillAppear:animated];
 	
-	// Do stuff
 	GLView *glView = (GLView *)self.view;
 
 	glView.animationInterval = 1.0 / kRenderingFrequency;
 	[glView startAnimation];
 	
-//	[self beginLoadingDataFromWeb];
-//	[self showLoadingProgress];
-
 }
 
 // The Stanford Pattern
@@ -109,7 +107,7 @@ static TEIVertex _rectangle[4];
 	[super viewWillDisappear:animated];
 }
 
--(void)setupView:(GLView*)view {
+-(void)setupView:(GLView *)view {
 	
 	glEnable(GL_DEPTH_TEST);
 	
