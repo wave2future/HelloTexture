@@ -18,14 +18,14 @@
 	GLuint _name;
 	GLuint _width;
 	GLuint _height;
-	
 	NSMutableArray *_pvrTextureData;
 	
 }
 
-@property (readonly) GLuint name;
-@property (readonly) GLuint width;
-@property (readonly) GLuint height;
+@property(nonatomic,assign)GLuint name;
+@property(nonatomic,assign)GLuint width;
+@property(nonatomic,assign)GLuint height;
+@property(nonatomic,retain)NSMutableArray *pvrTextureData;
 
 - (id)initWithTextureFile:(NSString *)name									
 				   mipmap:(BOOL)mipmap;

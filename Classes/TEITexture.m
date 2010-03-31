@@ -12,48 +12,18 @@ static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
 
 @implementation TEITexture
 
+@synthesize name = _name;
+@synthesize width = _width;
+@synthesize height = _height;
+@synthesize pvrTextureData = _pvrTextureData;
+
 - (void)dealloc {
 	
-	[_pvrTextureData removeAllObjects];
-	[_pvrTextureData release], _pvrTextureData = nil;
+    [_pvrTextureData release], _pvrTextureData = nil;
+	
+	glDeleteTextures(1, _name);
+	
 	[super dealloc];
-}
-
-- (id)init {
-	
-	self = [super init];
-	
-	if(nil != self) {
-		
-		_width	= checkImageWidth;
-		_height	= checkImageHeight;
-		
-		[self makeCheckImage];
-		
-		glGenTextures(1, &_name);
-		glBindTexture(GL_TEXTURE_2D, _name);
-		
-		// Wrap at texture boundaries
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
-		
-		//		glGenerateMipmapOES(GL_TEXTURE_2D);
-		
-		GLenum err = glGetError();
-		if (err != GL_NO_ERROR) {
-			NSLog(@"Error Uploading Texture to GPU. glError: 0x%04X", err);
-		}
-		
-		_pvrTextureData = [[NSMutableArray alloc] init];
-		
-	}
-	
-	return self;
 }
 
 typedef enum {
@@ -273,6 +243,43 @@ static uint8_t *GetImageData(CGImageRef image, NGTextureFormat format) {
 	CGContextRelease(context);
 	
 	return data;
+}
+
+- (id)init {
+	
+	self = [super init];
+	
+	if(nil != self) {
+		
+		_width	= checkImageWidth;
+		_height	= checkImageHeight;
+		
+		[self makeCheckImage];
+		
+		glGenTextures(1, &_name);
+		glBindTexture(GL_TEXTURE_2D, _name);
+		
+		// Wrap at texture boundaries
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+		
+		//		glGenerateMipmapOES(GL_TEXTURE_2D);
+		
+		GLenum err = glGetError();
+		if (err != GL_NO_ERROR) {
+			NSLog(@"Error Uploading Texture to GPU. glError: 0x%04X", err);
+		}
+		
+		_pvrTextureData = [[NSMutableArray alloc] init];
+		
+	}
+	
+	return self;
 }
 
 - (id)initWithTextureFile:(NSString *)name mipmap:(BOOL)mipmap {
@@ -539,9 +546,5 @@ typedef struct _PVRTexHeader {
 		}
 	}
 }
-
-@synthesize name	= _name;
-@synthesize width	= _width;
-@synthesize height	= _height;
 
 @end
